@@ -6,7 +6,24 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+
+
+
 import { AuthContext } from '../../context/auth';
+
+
+
+
+import firebase from '../../database/firebase';
+
+
+
+
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth();
+
+
 
 
 
@@ -26,7 +43,7 @@ function Cad({ navigation }) {
 
 
 
-   const { setUser, user, setId, id } = useContext(AuthContext);
+   const { setEmail } = useContext(AuthContext);
 
 
 
@@ -38,14 +55,16 @@ function Cad({ navigation }) {
 
 
 
+
+
    const [credencials, setCredencials] = useState(
       {
-         userId: "",
-         userName: "",
-         userEmail: "",
-         userPassword: ""
+         email: "",
+         password: ""
       }
    );
+
+
 
 
 
@@ -59,9 +78,85 @@ function Cad({ navigation }) {
 
 
 
+
+  
+
+
+
+
+
+
+
+      const setRegister = async ()=> {
+
+        await createUserWithEmailAndPassword(auth, credencials.email, credencials.password)
+         .then((userCredential) => {
+                      
+           const user = userCredential.user;
+           
+           setEmail(user.email)
+           navigation.navigate("Home") ;
+  
+           console.log(user.email)
+
+         })
+         .catch((error) => {
+           const errorCode = error.code;
+           const errorMessage = error.message;
+         
+
+           setErrorValidate(
+             {
+              ...errorValidate,['error']:true ,
+                 errorValidate,['msg']:"erro, favor mais tarde ou entre em contato com suporte"
+             }
+           );
+
+
+           setCredencials(
+             {
+              ...credencials,['email']:"",
+                 credencials,['password']:""
+             }
+           );
+
+           console.log(" erro no metodo auth "+errorCode+" "+errorMessage)
+         });
+       
+      
+       
+       
+      /*
+       firebase.auth().createUserWithEmailAndPassword(credencials.email, credencials.password)
+        .then((userCredencial)=>{
+                
+           let userI = userCredencial.user;
+           let userId = userI.uid;
+           let userEmail = userI.email;           
+
+          // setId(userEmail)
+         //  navigation.navigate("Home") ;
+             console.log(userEmail);
+
+        }).cath((error)=>{       
+         let errorCode = error.code;
+         let errorMessage = error.message;
+         console.log(errorCode+" "+errorMessage)
+        });
+         */
+
+
+      };
+        
+
+     
+
+
+
+
          const validate = () =>{
        
-      if ( !credencials.userEmail.includes('@')   ) {
+      if ( !credencials.email.includes('@')   ) {
 
             setErrorValidate(
               {
@@ -69,18 +164,18 @@ function Cad({ navigation }) {
                    errorValidate,['msg']:"email invalido"
               }
             );
+
             setCredencials(
               {
-                ...credencials,['userName']:"",
-                   credencials,['userId']:"",
-                   credencials,['userEmail']:"",
-                   credencials,['userPassword']:""
+                ...credencials,['email']:"",
+                   credencials,['password']:""
               }
             );
+
              console.log("email não valido");
 
            
-      }else if ( !credencials.userEmail.includes ('.com') ) {
+      }else if ( !credencials.email.includes ('.com') ) {
 
          setErrorValidate(
             {
@@ -90,16 +185,14 @@ function Cad({ navigation }) {
           );
           setCredencials(
             {
-              ...credencials,['userName']:"",
-                 credencials,['userId']:"",
-                 credencials,['userEmail']:"",
-                 credencials,['userPassword']:""
+              ...credencials,['email']:"",
+                 credencials,['password']:""
             }
           );
            console.log("email não valido");
               
        
-   }else if ( credencials.userPassword.length < 8 ) {
+   }else if ( credencials.password.length < 8 ) {
            
          setErrorValidate(
             {
@@ -109,10 +202,8 @@ function Cad({ navigation }) {
           )
           setCredencials(
             {
-               ...credencials,['userName']:"",
-                  credencials,['userId']:"",
-                  credencials,['userEmail']:"",
-                  credencials,['userPassword']:""
+               ...credencials,['email']:"",
+                  credencials,['password']:""
             }
           )
            console.log(" senha menor que 8 caracteres")
@@ -125,17 +216,12 @@ function Cad({ navigation }) {
           )
           setCredencials(
             {
-               ...credencials,['userName']:"",
-                  credencials,['userId']:"",
-                  credencials,['userEmail']:"",
-                  credencials,['userPassword']:""
+               ...credencials,['email']:"",
+                  credencials,['password']:""
             }
-          );
-
-            setUser(credencials.userName);
-            setId(credencials.userId)
-            navigation.navigate("Home") ;
-            console.log(" cadastro realizado com sucesso!!");
+          );           
+            console.log(" validação ok");
+            setRegister();
       }
    }
 
@@ -204,6 +290,9 @@ function Cad({ navigation }) {
                   style={Style.contentMain}    
                 >
 
+
+                {/*
+
                <TextInput style={Style.input}
                   placeholder=" digite o seu nome completo"
                   placeholderTextColor="#BBD441"
@@ -215,7 +304,8 @@ function Cad({ navigation }) {
                   value={credencials.userName}
                />
 
-               <TextInput style={Style.input}
+        
+                <TextInput style={Style.input}
                   placeholder=" digite a sua matrícula"
                   placeholderTextColor="#BBD441"
                   type="text"
@@ -224,17 +314,21 @@ function Cad({ navigation }) {
 
                   }
                   value={credencials.userId}
-               />
+               /> 
+               */}
+
+
+
 
                <TextInput style={Style.input}
                   placeholder=" digite o seu e-mail"
                   placeholderTextColor="#BBD441"
                   type="text"
                   onChangeText={
-                     (valor) => handleInputChange('userEmail', valor)
+                     (valor) => handleInputChange('email', valor)
 
                   }
-                  value={credencials.userEmail}
+                  value={credencials.email}
                />
 
 
@@ -244,18 +338,17 @@ function Cad({ navigation }) {
                   secureTextEntry={true}
                   type="text"
                   onChangeText={
-                     (valor) => handleInputChange('userPassword', valor)
+                     (valor) => handleInputChange('password', valor)
 
                   }
-                  value={credencials.userPassword}
+                  value={credencials.password}
                />
 
 
 
                {
 
-          credencials.userName  == "" && credencials.userId == "" && 
-          credencials.userEmail == "" && credencials.userPassword == ""
+              credencials.email == "" && credencials.password == ""
                      ?
 
                      <View>

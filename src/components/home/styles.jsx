@@ -9,6 +9,18 @@ export default StyleSheet.create({
        },
 
 
+
+       modalContent:{
+        alignItems:'center',
+        backgroundColor:'black',
+        flex:1,   
+        flexDirection:'column',
+        justifyContent:'center',
+        textAlign:'center',          
+    },
+
+
+
        containerHeader:{
         backgroundColor: 'rgba(19, 60, 77, 0.9)',
         flexDirection: 'col',
@@ -20,7 +32,6 @@ export default StyleSheet.create({
 
        headerDesc:{
           textAlign:'center'
-
        },
 
 
@@ -77,6 +88,21 @@ export default StyleSheet.create({
         alignItems:'center'
        },
 
+          
+
+       modalHome:{
+        flexDirection: 'col',
+       // backgroundColor: 'rgba(6, 12, 127, 0.3)',
+        width: 'auto',
+        height: 500,      
+        justifyContent: 'center',     
+        borderRadius: 10,
+        marginBottom:30,   
+        marginTop: 30,
+       // textAlign:'center',
+       // padding:10, 
+        alignItems:'center'
+       },
 
        
        menuBtn:{
@@ -105,7 +131,30 @@ export default StyleSheet.create({
 
 
 
+       input: {
+        width: 300,
+        height: 50,
+        marginTop: 20,            
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#6BA995",
+      //  marginLeft: 'auto',
+      //  marginRight: 'auto',
+        color: "#0BF5AB"
+      },
 
+
+      
+      /* containerBtn:{
+       backgroundColor: 'rgba(6, 12, 127, 0.8)',
+        width: 140,
+        height: 40,      
+        justifyContent: 'center',     
+        borderRadius: 10,
+        marginTop: 30,
+        marginBottom:30,   
+        textAlign:'center',
+      }, */
 
 
 

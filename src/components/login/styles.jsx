@@ -75,7 +75,42 @@ export default StyleSheet.create({
 
 
 
+        
 
+       openModal:{
+        backgroundColor: 'rgba(6, 12, 127, 0.3)',       
+        height: 'auto',
+        marginTop:30,
+        width: 'auto', 
+       },
+
+
+
+       modalContent:{
+        alignItems:'center',
+        backgroundColor:'black',
+        flex:1,   
+        flexDirection:'column',
+        justifyContent:'center',
+        textAlign:'center',          
+    },
+
+
+       /*
+       modalLogin:{
+        alignItems:'center',
+        borderRadius: 10,
+        flexDirection: 'col',
+        height: 500, 
+        justifyContent: 'center', 
+       // backgroundColor: 'rgba(6, 12, 127, 0.3)',
+        width: 'auto',    
+       // marginBottom:30,   
+       // marginTop: 30,
+       // textAlign:'center',
+       // padding:10,         
+       },
+       */
 
 
 

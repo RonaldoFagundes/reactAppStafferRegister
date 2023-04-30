@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, } from 'react';
 
-import { View, SafeAreaView ,ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Modal, SafeAreaView ,ScrollView, Text, TextInput, TouchableOpacity, View, } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -10,13 +10,26 @@ import Style from './styles';
 
 
 
+import firebase from '../../database/firebase';
+
+//import { doc, setDoc } from "firebase/firestore"    getFirestore,; 
+
+import { doc, setDoc } from "firebase/firestore";
+
+
+
+
+
+
 
 
 function Home({ navigation }) {
 
 
 
-   const { setUser, user, setId, id } = useContext(AuthContext);
+
+   const db = firebase.firestore();
+  
 
 
    var dta = new Date();
@@ -54,16 +67,44 @@ function Home({ navigation }) {
 
 
 
+   const { setUser , user , setId, id , email, setModal ,modal} = useContext(AuthContext);
+
+
 
    const [welcome, setWelcome] = useState();
 
 
+  
 
-   const setLogout = () => {
+
+   const [credencials, setCredencials] = useState(
+      {
+         nome: "",
+         matricula: "",
+         //img:""
+      }
+   );
+
+
+
+
+
+
+
+
+   const signOut = async () => {
+   
+     await firebase.auth().signOut().then(() => {
+
       setUser("") &
-         setId("") &
-         navigation.navigate("Login")
+      setId("") &
+      navigation.navigate("Login")
+
+       }).catch((error) => {
+            Alert.alert("erro na funçao signOut")
+       });          
    }
+
 
 
 
@@ -83,9 +124,80 @@ function Home({ navigation }) {
 
 
 
-   const setVisit = () => {
+
+
+
+
+   const handleInputChange = (atribute , value) => {
+
+      setCredencials(
+         {
+          ...credencials,[atribute]:value
+         }      
+      )
+
+   } 
+
+
+
+
+   /*
+   const setImg = async()=> {
+      await
+   }
+    */
+    
+  
+   const setCompleteRegister = async ()=> {
+
+      await setDoc(doc(db, email, "Funcionario"),{
+
+         matricula:credencials.matricula,
+         nome:credencials.nome,
+      // img:credencials.img
+
+         /* possivel erro */
+      }).then(()=>{  
+
+            getUser();
+            console.log("cadastrado ")
+
+     }).catch((error)=>{
+         console.log(error);
+     });
+ 
+
+   } 
+
+  
+   
+
+   const getUser = async()=>{
+
+     await db.collection(email).doc("Funcionario").get().then((snapshot) => {
+
+         if (snapshot.data() != undefined) {
+         
+            setModal(false);   
+            setUser(snapshot.data().nome);
+            setId(snapshot.data().matricula);
+
+       console.log (snapshot.data().matricula+"  "+snapshot.data().nome);
+                      
+         } else {
+            setModal(true);
+         }
+      })
+
 
    }
+
+
+
+
+
+
+
 
 
 
@@ -127,14 +239,14 @@ function Home({ navigation }) {
            <View style={Style.containerInfo}>
 
              <View>
-                <Text style={Style.textInfo}> {` usuário           : ${user}`}</Text>
+                <Text style={Style.textInfo}> {` usuário       : ${user}`}</Text>  
                 <Text style={Style.textInfo}> {` matrícula nº  : ${id}`}</Text>
              </View>
 
                <View>
                  <TouchableOpacity
                   style={Style.menuBtn}
-                  onPress={setLogout}
+                  onPress={signOut}
                    >
                  <Text style={Style.textInfo}>Sair</Text>
                  </TouchableOpacity>
@@ -153,13 +265,15 @@ function Home({ navigation }) {
 
 
 
-       <ScrollView >
+     <ScrollView >
 
 
-         <View style={Style.containnerMain}>
+        <View style={Style.containnerMain}>
 
             
-            <View style={Style.contentMain}>
+
+
+           <View style={Style.contentMain}>
 
 
 
@@ -194,7 +308,7 @@ function Home({ navigation }) {
                  >
 
                   <TouchableOpacity
-                    onPress={setVisit}
+                   
                   >
                      <Text style={Style.textInfo}>Click !</Text>
                   </TouchableOpacity>
@@ -209,9 +323,6 @@ function Home({ navigation }) {
 
 
 
-
-
-
               <LinearGradient
                   colors={
                    [
@@ -223,48 +334,7 @@ function Home({ navigation }) {
                  >
 
                   <Text style={Style.textAlert}>
-                     {` ${welcome} ${user} , click e receba o regimento interno`}
-                  </Text>
-
-
-
-                 <LinearGradient
-                  colors={
-                   [
-                     'rgba(19, 110, 107, 0.4)',
-                     'rgba(15, 113, 35 ,0.6)',
-                  ]
-                 }
-                 style={Style.cardBtn}        
-                 >
-
-                  <TouchableOpacity
-                    onPress={setVisit}
-                  >
-                     <Text style={Style.textInfo}>Click !</Text>
-                  </TouchableOpacity>
-             
-
-                 </LinearGradient>
-
-               </LinearGradient>
-
-
-
-
-
-               <LinearGradient
-                  colors={
-                   [
-                     'rgba(19, 50, 27, 0.4)',
-                     'rgba(10, 13, 35 ,0.6)',
-                  ]
-                 }
-                style={Style.containerCard}         
-                 >
-
-                  <Text style={Style.textAlert}>
-                     {` ${welcome} ${user} , click e conheça a sua equipe de trabalho!!!`}
+                     {` ${welcome}, ${user} click e conheça a sua equipe de trabalho!!!`}
                   </Text>
 
 
@@ -281,7 +351,7 @@ function Home({ navigation }) {
                  >
 
                   <TouchableOpacity
-                     onPress={setVisit}
+                    
                   >
                      <Text style={Style.textInfo}>Click !</Text>
                   </TouchableOpacity>
@@ -289,6 +359,106 @@ function Home({ navigation }) {
                </LinearGradient>
 
               </LinearGradient>
+
+
+
+
+
+
+
+           
+
+
+             <Modal
+                animationType='fade'
+                  visible={modal}
+               >
+
+
+               <View style={Style.modalContent}>
+
+
+                  <Text style={Style.textAlert}>
+                     {` ${welcome}  , complete o cadastro `}
+                  </Text>
+
+                
+                 <View>
+
+                   <TextInput style={Style.input}
+                     placeholder=" digite o seu nome completo"
+                     placeholderTextColor="#BBD441"
+                     type="text"
+                     onChangeText={
+                      (valor) => handleInputChange('nome', valor)
+                    }
+                     value={credencials.nome}
+                   />
+
+
+
+        
+                  <TextInput style={Style.input}
+                    placeholder=" digite a sua matrícula"
+                    placeholderTextColor="#BBD441"
+                    type="text"
+                    onChangeText={
+                    (valor) => handleInputChange('matricula', valor)
+                    }
+                     value={credencials.matricula}
+                  /> 
+
+               </View>
+
+
+
+               <LinearGradient
+                  colors={
+                   [
+                     'rgba(19, 110, 107, 0.4)',
+                     'rgba(15, 113, 35 ,0.6)',
+                  ]
+                 }
+                 style={Style.cardBtn}        
+                 >
+
+                  <TouchableOpacity                     
+                  >
+                     <Text style={Style.textInfo}>Escolher uma foto</Text>
+                  </TouchableOpacity>
+
+                </LinearGradient>
+
+
+
+                <LinearGradient
+                  colors={
+                   [
+                     'rgba(19, 110, 107, 0.4)',
+                     'rgba(15, 113, 35 ,0.6)',
+                  ]
+                 }
+                 style={Style.cardBtn}        
+                 >
+
+                  <TouchableOpacity
+                     onPress={setCompleteRegister}
+                  >
+                     <Text style={Style.textInfo}>Cadastrar</Text>
+                  </TouchableOpacity>
+             
+                </LinearGradient>
+
+                
+             </View>
+
+
+            </Modal>
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 import React, {useEffect , useContext , useState} from 'react';
 
-import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -10,11 +10,10 @@ import Style from './styles';
 
 
 
-import firebase from '../../database/firebase';
+//import firebase from '../../database/firebase';
 
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const auth = getAuth();
+
 
 
 
@@ -22,27 +21,32 @@ const auth = getAuth();
 
     function Login ({navigation}){
 
-    
+
+     // const { setCredencials, credencials } = useContext(AuthContext);
+
   
 
 
-    
+     // const emailValid = "nikolau@tesla.com";
+     // const passwordValid ="12345678";
+     // const userName ="Nikolau";  
+     // const userId = "1890" 
 
-     const db = firebase.firestore();
-
-
-     const { setUser , setId, setModal} = useContext(AuthContext);
-
-
+     //const db = firebase.firestore();
 
 
-     const [modalPassword, setModalPassword] = useState(false);
-
-     const [emailPassword , setEmailPassword] = useState(false);
+     const { setUser } = useContext(AuthContext);
 
 
 
 
+
+
+
+       const [dataUser , setDataUser] = useState ({
+          authEmail : "",
+          authPassword :"",
+       }); 
 
 
 
@@ -59,163 +63,76 @@ const auth = getAuth();
 
 
 
-    const [errorValidate, setErrorValidate] = useState(
-      {
-       error: false,      
-       msg:""      
-       }
-     );
+    const [errorValidate, setErrorValidate] = useState({
+     error: false,      
+     msg:""      
+     });
 
 
 
 
 
-     const handleInputChange = (atribute , value) => {
-      setCredencials(
-         {
-          ...credencials,[atribute]:value
-         }
-      )
-   } 
-  
+
 
       
-
-  
-  
-      const setLogar = async () => {
-
-        await signInWithEmailAndPassword(auth, credencials.email, credencials.password)
-        .then((userCredential) => {
-        
-          const user = userCredential.user;
-          getUser(user.email)
-
-          console.log(user.email);
-        
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-
-         
-          setErrorValidate(
-            {
-              ...errorValidate,['error']:true ,
-                 errorValidate,['msg']:"email ou senha incorretos!"
-            }
-          )
-   
-  
-          setCredencials(
-            {
-          ...credencials,['email']:"",
-             credencials,['password']:"",
-          }
-          )
-  
-           console.log(" erro nas credenciais de login "+errorCode+" "+errorMessage)
-        });
-
-      }
-
-
-
-
-
-        /*
-        firebase.auth().signInWithEmailAndPassword(credencials.email, credencials.password)
-        .then((userCredencial)=>{
-                
-           //const user_email = firebase.auth().currentUser.email;              
-          // navigation.navigate("Home") ;
-          // let user = userCredential.user;
-          //let userId = userI.uid;
-          //  getUserData(user.email)
-
-           console.log(user.email);
-
-        }).cath((error)=>{
-       
-         let errorCode = error.code;
-         let errorMessage = error.message; 
-         
-         
-        });
-        */
-  
 
 
 
 
      /*
-      const setResetPassword = async ()=> {
-       await
-      }
+      const setLogar = ()=>{
+
+        firebase.auth().signInWithEmailAndPassword(credencials.email, credencials.password)
+        .then((userCredencial)=>{
+
+                
+           //const user_email = firebase.auth().currentUser.email;
+       
+        
+          // navigation.navigate("Home") ;
+
+          let user = userCredencial.user;
+          //let userId = userI.uid;
+          //  getUserData(user.email)
+
+         //  console.log(user.email);
+
+        }).cath((error)=>{
+       
+         let errorCode = error.code;
+         let errorMessage = error.message;
+
+       
+         
+         setErrorValidate(
+          {
+            ...errorValidate,['error']:true ,
+               errorValidate,['msg']:"email ou senha incorretos!"
+          }
+        )
+
+
+
+        setCredencials(
+          {
+        ...credencials,['userEmail']:"",
+           credencials,['userPassword']:"",
+        }
+        )
+
+         console.log(" erro nas credenciais de login "+errorCode+" "+errorMessage)
+
+        });
+     }
+
      */
 
-
-
-
-    
-    const getUser = async (id)=>{
-  
-     await db.collection(id).doc("Funcionario").get().then((snapshot) => {
-
-         if (snapshot.data() != undefined) {
-      
-
-          setCredencials(
-            {
-          ...credencials,['email']:"",
-             credencials,['password']:"",
-            }
-          )
-
-
-
-            setUser(snapshot.data().nome)
-            setId(snapshot.data().matricula)
-            setModal(false)
-            navigation.navigate("Home"); 
-            
-
-           console.log (
-             snapshot.data().matricula
-             +"  "+
-             snapshot.data().nome
-           );
-           
-           
-         } else {
-          
-          setErrorValidate(
-            {
-              ...errorValidate,['error']:true ,
-                 errorValidate,['msg']:" erro, favor mais tarde ou entre em contato com suporte "
-            }
-          )
-   
-  
-          setCredencials(
-            {
-          ...credencials,['email']:"",
-             credencials,['password']:"",
-          }
-          )
-  
-           console.log(" erro ao carregrar dados no firebase  "+errorCode+" "+errorMessage)
-         }
-      })
-
-    }
 
 
 
 
 
    /*
-
      const getUser = async (id)=>{
 
 
@@ -253,9 +170,32 @@ const auth = getAuth();
 
 
 
-   
 
        
+
+
+     
+
+
+     
+
+
+     
+
+
+
+
+
+   
+
+       const handleInputChange = (atribute , value) => {
+        setCredencials(
+           {
+            ...credencials,[atribute]:value
+           }
+        )
+     } 
+    
 
 
 
@@ -316,7 +256,17 @@ const auth = getAuth();
 
 
 
+
+
+
+
+
+
+
+
    return(
+
+
    
 
       <LinearGradient
@@ -332,8 +282,7 @@ const auth = getAuth();
           
 
 
-        <View style={Style.containnerMain}>
-
+         <View style={Style.containnerMain}>
 
             <View style={Style.containerInfo}>
                <Text style={Style.textMain}>{` Tela Login `}</Text>
@@ -411,7 +360,7 @@ const auth = getAuth();
 
                       <TouchableOpacity
                           style={Style.containerBtn}
-                          onPress={setLogar}
+                        //  onPress={setLogar}
                           >
                         <Text style={Style.textInfo}>Logar</Text>
                       </TouchableOpacity>
@@ -437,7 +386,7 @@ const auth = getAuth();
 
 
 
-                 <Text style={Style.textInfo}>                  
+               <Text style={Style.textInfo}>                  
                    {` não tem cadastro ?  `}
                    
                   <Text style={Style.textAlert}
@@ -450,80 +399,21 @@ const auth = getAuth();
 
 
 
-               <View style={Style.openModal} >
-
-                 <Text style={Style.textAlert}
-                       onPress={() => setModalPassword(true) }
-                     >
-                   {` esqueceu a senha ? `}
-                </Text>
-               
-               </View>
             
-
-
              </LinearGradient>
 
-              
 
 
-
-            
-           
-
-
-             <Modal
-                animationType='fade'
-                 visible={modalPassword}
-               >
-
-               <View style={Style.modalContent}>
-
-
-                  <TextInput style={Style.input}
-                    placeholder=" informe o e-mail"
-                    placeholderTextColor="#BBD441"
-                    type="text"
-                     onChangeText={
-                       (valor) => setEmailPassword(valor)
-                       
-                     //  handleInputChange('email',valor)
-                    
-                       }
-                       // value={emailPassword}
-                   />                          
-                  
-                   
-                
-                     <TouchableOpacity
-                       style={Style.containerBtn}                        
-                          onPress={() => setModalPassword(false) }
-                          >
-                        <Text style={Style.textInfo}>Enviar</Text>
-                     </TouchableOpacity>
-                
-
-
-                 </View>
-
-                </Modal>
-
-                
-             
-
-
-
-
+               
 
 
        
-           </View>
+         </View>
 
-
-       </LinearGradient>
+      </LinearGradient>
 
           )
 
-      }
+   }
 
    export default Login;

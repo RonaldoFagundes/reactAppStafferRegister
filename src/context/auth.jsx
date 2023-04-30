@@ -5,32 +5,34 @@ import React , {createContext,useState} from 'react';
 export const AuthContext = createContext({});
 
 
-  function AuthProvider ({children}){
+
+
+        function AuthProvider ({children}){
 
    
+
+       
+
+     const [modal , setModal] = useState (true) ;
+
+     const [email,setEmail] = useState ( ) ;   
+
      const [user,setUser] = useState ( ) ;
 
-     const [id,setId] = useState ( ) ;
+     const [id, setId] = useState ( ) ;
 
-     /*
-     const [credencials,setCredencials] = useState ( 
-      { 
+     
 
-         id:0,
-         user:"",
-         email:"",
-         password:"", 
-
-      } );  
-     */
 
 
 
      return(
        <AuthContext.Provider value={ 
           { 
-            // setCredencials ,
-            // credencials
+            setModal,
+            modal,
+            setEmail,
+            email,
             setUser ,
             user,
             setId,
