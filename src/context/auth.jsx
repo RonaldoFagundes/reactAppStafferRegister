@@ -21,7 +21,7 @@ export const AuthContext = createContext({});
 
      const [id, setId] = useState ( ) ;
 
-     
+    
 
 
 
@@ -36,7 +36,7 @@ export const AuthContext = createContext({});
             setUser ,
             user,
             setId,
-            id
+            id           
           } 
           
           }>

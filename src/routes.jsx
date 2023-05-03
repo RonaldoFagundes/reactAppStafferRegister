@@ -4,11 +4,11 @@ import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
 
 
-import Cad from './components/cad';
 
-import Login from './components/login';
 
-import Home from './components/home';
+import Login from './components/login/Index';
+import Cad   from './components/cad/index';
+import Home  from './components/home/index';
 
 
 const Stack = createNativeStackNavigator();
@@ -26,22 +26,15 @@ const Stack = createNativeStackNavigator();
                       headerShown: false
                     }} 
                   >         
-                 
-                  
-                <Stack.Screen              
+                    <Stack.Screen              
                       name="Login"
                       component={Login}
-      
-                      
-                      
+              
                        options={{
                        headerShown:false
                       }} 
-                      
-                   
-      
+                    
                     />
-
 
                     <Stack.Screen              
                       name="Cad"
@@ -54,8 +47,9 @@ const Stack = createNativeStackNavigator();
                       name="Home"
                       component={Home}     
                       
-                    />
-            
+                    />              
+
+
                 </Stack.Navigator>
              
           );

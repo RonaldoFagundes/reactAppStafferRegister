@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react';
 
 
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity ,View,} from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -43,7 +43,7 @@ function Cad({ navigation }) {
 
 
 
-   const { setEmail } = useContext(AuthContext);
+   const { setEmail,setModal } = useContext(AuthContext);
 
 
 
@@ -95,6 +95,7 @@ function Cad({ navigation }) {
            const user = userCredential.user;
            
            setEmail(user.email)
+           setModal(true)
            navigation.navigate("Home") ;
   
            console.log(user.email)
@@ -108,7 +109,7 @@ function Cad({ navigation }) {
            setErrorValidate(
              {
               ...errorValidate,['error']:true ,
-                 errorValidate,['msg']:"erro, favor mais tarde ou entre em contato com suporte"
+                 errorValidate,['msg']:" email informado já cadastrado!"
              }
            );
 
@@ -125,6 +126,8 @@ function Cad({ navigation }) {
        
       
        
+
+         
        
       /*
        firebase.auth().createUserWithEmailAndPassword(credencials.email, credencials.password)
@@ -250,7 +253,17 @@ function Cad({ navigation }) {
 
 
 
+
+
+
    return (
+
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={Style.body}
+   >
+
+
 
       <LinearGradient
          colors={
@@ -259,14 +272,11 @@ function Cad({ navigation }) {
               'rgba(19, 53, 75 ,1)',
            ]
            }     
-            style={Style.body}    
+           style={Style.containerMain} 
           >
    
 
-
-
-
-       <View style={Style.containnerMain}>
+      
 
 
            <View style={Style.containerInfo}>
@@ -333,7 +343,7 @@ function Cad({ navigation }) {
 
 
                <TextInput style={Style.input}
-                  placeholder=" cadastre uma senha"
+                  placeholder=" senha com no minímo 8 caracteres"
                   placeholderTextColor="#BBD441"
                   secureTextEntry={true}
                   type="text"
@@ -421,13 +431,11 @@ function Cad({ navigation }) {
             
 
 
-
-         </View>
-         
+   
 
       </LinearGradient>
 
-
+  </KeyboardAvoidingView>
    )
 
 

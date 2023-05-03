@@ -10,16 +10,8 @@ export default StyleSheet.create({
 
 
 
-       containerInfo:{
-         marginBottom:140,
-         alignItems:'center'
-       },
 
-
-
-
-       
-      containnerMain:{
+       containerMain:{
         // alignItems: 'center',
         // backgroundColor:'#6D9664',
         // backgroundColor: 'rgba(19, 60, 77, 0.8)',
@@ -28,6 +20,22 @@ export default StyleSheet.create({
          with:'100%'
        },
 
+
+
+
+
+       containerInfo:{
+        alignItems:'center',
+         height:'auto',
+         marginBottom:140,
+         padding:40,        
+       },
+
+
+
+
+       
+      
 
 
 
@@ -63,14 +71,15 @@ export default StyleSheet.create({
 
        
        containerBtn:{
-        backgroundColor: 'rgba(6, 12, 127, 0.8)',
-         width: 140,
+         alignItems:'center',
+         backgroundColor: 'rgba(6, 12, 127, 0.8)',
+        
          height: 40,      
          justifyContent: 'center',     
          borderRadius: 10,
          marginTop: 30,
          marginBottom:30,   
-         textAlign:'center',
+         width: 140,
        },
 
 
