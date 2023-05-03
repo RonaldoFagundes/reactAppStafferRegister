@@ -1,6 +1,6 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { Alert, KeyboardAvoidingView,  Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, KeyboardAvoidingView, Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -8,16 +8,9 @@ import { AuthContext } from '../../context/auth';
 
 import Style from './styles';
 
-
-
 import firebase from '../../database/firebase';
 
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-
-//import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-
-
-const auth = getAuth();
 
 
 
@@ -27,26 +20,14 @@ function Login({ navigation }) {
 
 
 
-
-
-
-
   const db = firebase.firestore();
-
-
-  const { setUser, setId, setImgUri ,setModal } = useContext(AuthContext);
+  const auth = getAuth();
 
 
 
+  const { setUser, setId, setModal } = useContext(AuthContext);
 
   const [modalPassword, setModalPassword] = useState(false);
-
-  //const [emailPassword , setEmailPassword] = useState(false);
-
-
-
-
-
 
 
 
@@ -61,14 +42,12 @@ function Login({ navigation }) {
 
 
 
-
   const [errorValidate, setErrorValidate] = useState(
     {
       error: false,
       msg: ""
     }
   );
-
 
 
 
@@ -82,6 +61,13 @@ function Login({ navigation }) {
   }
 
 
+
+
+  useEffect(() => {
+
+    cleanInput();
+
+  }, [],);
 
 
 
@@ -101,14 +87,12 @@ function Login({ navigation }) {
         const errorCode = error.code;
         const errorMessage = error.message;
 
-
         setErrorValidate(
           {
             ...errorValidate, ['error']: true,
             errorValidate, ['msg']: "email ou senha incorretos!"
           }
         )
-
 
         setCredencials(
           {
@@ -125,43 +109,17 @@ function Login({ navigation }) {
 
 
 
- 
-
-
-
-
-
-  /*
-  firebase.auth().signInWithEmailAndPassword(credencials.email, credencials.password)
-  .then((userCredencial)=>{
-          
-     //const user_email = firebase.auth().currentUser.email;              
-    // navigation.navigate("Home") ;
-    // let user = userCredential.user;
-    //let userId = userI.uid;
-    //  getUserData(user.email)
-
-     console.log(user.email);
-
-  }).cath((error)=>{
- 
-   let errorCode = error.code;
-   let errorMessage = error.message; 
-   
-   
-  });
-  */
-
-
 
 
 
 
   const setForgetPassword = async () => {
 
-   await sendPasswordResetEmail(auth, credencials.email)
+    await sendPasswordResetEmail(auth, credencials.email)
 
       .then(() => {
+
+        alert('VERIFIQUE SUA CAIXA DE E-MAIL');
 
         setModalPassword(false)
 
@@ -171,22 +129,13 @@ function Login({ navigation }) {
             credencials, ['password']: "",
           }
         )
-        
-        Alert.alert(           
-          ' VERIFIQUE SUA CAIXA DE E-MAIL',
-          [
-            { text: 'ok', },         
-          ],
-          { cancelable: false }         
-          );
-
 
         console.log("verifique sua caixa de email")
 
       }).catch((error) => {
+        alert('email incorreto');
         console.log(error)
       })
-
 
   }
 
@@ -200,23 +149,11 @@ function Login({ navigation }) {
 
       if (snapshot.data() != undefined) {
 
-
-        setCredencials(
-          {
-            ...credencials, ['email']: "",
-            credencials, ['password']: "",
-          }
-        )
-
-
-
         setUser(snapshot.data().nome)
         setId(snapshot.data().matricula)
-       
-        
         setModal(false)
-        navigation.navigate("Home");
 
+        navigation.navigate("Home");
 
         console.log(
           snapshot.data().matricula
@@ -233,7 +170,6 @@ function Login({ navigation }) {
             errorValidate, ['msg']: " erro, favor mais tarde ou entre em contato com suporte "
           }
         )
-
 
         setCredencials(
           {
@@ -252,116 +188,41 @@ function Login({ navigation }) {
 
 
 
-  /*
 
-   const getUser = async (id)=>{
 
-  //   const collect =  firebase.db.collection(id) 
+  const cleanInput = () => {
 
-  //   const userName = await userId.doc ("nome").get();
-
-  //   console.log(user.data());
-   
-     db.collection(id).doc("nome").get().then((snapshot) => {
-
-         if (snapshot.data() != undefined) {
- 
-            setModal(false);
-            
-            setName(snapshot.data().name);
-            setConta(snapshot.data().number);
-            setUserName(snapshot.data().name);
-            setUserConta(snapshot.data().number);
-
-         } else {
-            setModal(true);
-         }
-    })
-
+    setCredencials(
+      {
+        ...credencials, ['email']: "",
+        credencials, ['password']: "",
+      }
+    )
   }
-  
- */
 
 
-
-
-
-
-  /*
- const validate = () =>{
-        
-   if ( credencials.userEmail === emailValid && credencials.userPassword === passwordValid ) {
-
-     setErrorValidate(
-       {
-         ...errorValidate,['error']:false ,
-            errorValidate,['msg']:""
-       }
-     )
-
-       setCredencials(
-           {
-         ...credencials,['userEmail']:"",
-            credencials,['userPassword']:"",
-         }
-       )
-         setUser(userName);
-         setId(userId);
-         navigation.navigate("Home"); 
-
-         console.log("credênciais validas ir para tela home");
-
-       }else {
-
-         setErrorValidate(
-           {
-             ...errorValidate,['error']:true ,
-                errorValidate,['msg']:"email ou senha incoretos!"
-           }
-         )
-
-         setCredencials(
-           {
-         ...credencials,['userEmail']:"",
-            credencials,['userPassword']:"",
-         }
-       )
-       console.log("email ou senha invalido")
-       }
-               
-    }
-   */
-
-
-
-
-
-   
 
 
 
 
   return (
 
-  <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={Style.body}
- >
-
-
-
-   <LinearGradient
-      colors={
-        [
-          'rgba(10, 40, 90, 0.97)',
-          'rgba(19, 53, 75 ,1)',
-        ]
-      }
-      style={Style.containerMain}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={Style.body}
     >
 
 
 
+      <LinearGradient
+        colors={
+          [
+            'rgba(10, 40, 90, 0.97)',
+            'rgba(19, 53, 75 ,1)',
+          ]
+        }
+        style={Style.containerMain}
+      >
 
 
         <View style={Style.containerInfo}>
@@ -370,28 +231,15 @@ function Login({ navigation }) {
 
 
 
-
-        {/*  
-               <Text> {` user : ${dataUser.user}`}</Text>
-               <Text> {` id : ${dataUser.id}`}</Text>
-               <Text> {` email : ${dataUser.email}`}</Text>
-               <Text> {` password : ${dataUser.password}`}</Text> 
-               */}
-
-
-
-
-      <LinearGradient
+        <LinearGradient
           colors={
             [
-             'rgba(19, 50, 27, 0.4)',
+              'rgba(19, 50, 27, 0.4)',
               'rgba(10, 13, 35 ,0.6)',
             ]
           }
           style={Style.contentMain}
         >
-
-
 
 
           <TextInput style={Style.input}
@@ -400,7 +248,6 @@ function Login({ navigation }) {
             type="text"
             onChangeText={
               (valor) => handleInputChange('email', valor)
-
             }
             value={credencials.email}
           />
@@ -415,7 +262,6 @@ function Login({ navigation }) {
             type="text"
             onChangeText={
               (valor) => handleInputChange('password', valor)
-
             }
             value={credencials.password}
           />
@@ -448,7 +294,6 @@ function Login({ navigation }) {
                 </TouchableOpacity>
 
               </View>
-
           }
 
 
@@ -465,10 +310,8 @@ function Login({ navigation }) {
           }
 
 
-
-
-
           <Text style={Style.textInfo}>
+
             {` não tem cadastro ?  `}
 
             <Text style={Style.textAlert}
@@ -491,25 +334,14 @@ function Login({ navigation }) {
 
           </View>
 
+        </LinearGradient>
 
-
-       </LinearGradient>
-
-
-
-
-
-
-
-
-
-       <Modal
+        <Modal
           animationType='fade'
           visible={modalPassword}
         >
 
           <View style={Style.modalContent}>
-
 
             <TextInput style={Style.input}
               placeholder=" informe o e-mail"
@@ -521,11 +353,9 @@ function Login({ navigation }) {
               value={credencials.email}
             />
 
-
-
             {
 
-              credencials.email == "" 
+              credencials.email == ""
                 ?
 
                 <View>
@@ -544,7 +374,8 @@ function Login({ navigation }) {
 
                   <TouchableOpacity
                     style={Style.containerBtn}
-                    onPress={() => setForgetPassword}
+                    onPress={() => setForgetPassword()}
+
                   >
                     <Text style={Style.textInfo}>Enviar</Text>
                   </TouchableOpacity>
@@ -553,24 +384,13 @@ function Login({ navigation }) {
 
             }
 
-         
-
-
           </View>
 
         </Modal>
 
+      </LinearGradient>
 
-
-     
-
-
-     </LinearGradient>
-
-
- 
-
- </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
 
 
   )
